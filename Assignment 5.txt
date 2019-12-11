@@ -1,0 +1,32 @@
+--1
+The students table is not directly related to the courses table.
+This is because there are no shared columns between the two tables.
+
+--2
+SELECT student_name
+FROM students
+WHERE student_no
+IN (SELECT student_no
+FROM student_enrollment
+WHERE course_no
+IN (SELECT course_no
+FROM courses
+WHERE course_title IN ('Physics', 'US History')))
+
+--3
+SELECT student_name
+FROM students
+WHERE student_no =
+(SELECT student_no FROM (SELECT student_no, COUNT(student_no) course_count
+FROM student_enrollment
+GROUP BY student_no
+ORDER BY course_count desc
+LIMIT 1) a)
+
+--4
+False
+
+--5
+SELECT student_name 
+FROM students
+WHERE age >= ALL (SELECT age FROM students)
