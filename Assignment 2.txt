@@ -1,0 +1,41 @@
+-- 1
+SELECT student_name
+FROM students
+WHERE age BETWEEN 18 and 20
+
+-- 2
+SELECT student_name
+FROM students
+WHERE student_name LIKE '%ch%'
+OR student_name LIKE '%nd'
+
+-- 3
+SELECT student_name
+FROM students
+WHERE NOT age = 19
+AND student_name LIKE '%ae%'
+OR student_name LIKE '%ph%'
+
+-- 4
+SELECT student_name
+FROM students
+ORDER BY age desc
+
+-- 5
+SELECT student_name, age
+FROM students
+ORDER BY age desc
+LIMIT 4
+
+--6 (wrong)
+SELECT *
+FROM students
+WHERE NOT (age > 20 AND ((student_no BETWEEN 3 and 5) OR student_no = 7))
+OR (age > 20 and student_no >=4)
+
+--6 (correct)
+SELECT *
+FROM students
+WHERE AGE <= 20
+AND ( student_no BETWEEN 3 AND 5 OR student_no = 7 )
+OR (AGE > 20 AND student_no >= 4);

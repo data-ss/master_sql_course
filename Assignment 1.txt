@@ -1,0 +1,6 @@
+Assignment 1
+
+1. variable characters, integers, date
+2. variable characters of length limit 5
+3. Two columns
+4. 8 rows

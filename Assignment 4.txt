@@ -1,0 +1,40 @@
+--1
+SELECT state, sum(supply)
+FROM fruit_imports
+GROUP BY state
+ORDER BY sum(supply) desc
+LIMIT 1
+
+--2
+SELECT season, max(cost_per_unit) max_cost_per_unit
+FROM fruit_imports
+GROUP BY season
+
+--3
+SELECT state, count(name)
+FROM fruit_imports
+GROUP BY state, name
+HAVING count(name) > 1
+
+--4
+SELECT season, count(name)
+FROM fruit_imports
+GROUP BY season
+HAVING count(name) >= 3
+
+--4 (solution)
+SELECT season, COUNT(name)
+FROM fruit_imports
+GROUP BY season
+HAVING count(name) = 3 OR count(name) = 4
+
+--5
+SELECT SUM((supply*cost_per_unit)) total_cost, state
+FROM fruit_imports
+GROUP BY state
+ORDER BY total_cost desc
+LIMIT 1
+
+--6
+SELECT count(COALESCE(fruit_name, 'NULL'))
+FROM fruits
