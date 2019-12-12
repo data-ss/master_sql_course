@@ -1,0 +1,15 @@
+--1
+SELECT name, SUM(supply) total_supply,
+CASE WHEN SUM(supply) < 20000 THEN 'LOW'
+	WHEN SUM(supply) BETWEEN 20000 AND 50000 THEN 'ENOUGH'
+	WHEN SUM(supply) > 50000 THEN 'FULL' END category
+FROM fruit_imports
+GROUP BY name
+
+--2
+SELECT SUM(CASE WHEN season = 'Winter' THEN supply*cost_per_unit END) Winter,
+SUM(CASE WHEN season = 'All Year' THEN supply*cost_per_unit END) All_Year,
+SUM(CASE WHEN season = 'Spring' THEN supply*cost_per_unit END) Spring,
+SUM(CASE WHEN season = 'Summer' THEN supply*cost_per_unit END) Summer,
+SUM(CASE WHEN season = 'Fall' THEN supply*cost_per_unit END) Fall
+FROM fruit_imports
