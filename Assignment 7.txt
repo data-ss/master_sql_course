@@ -1,0 +1,53 @@
+--1
+No the two tables are not directly related to each other because there are no common columns shared between the two tables.
+
+--2
+SELECT student_name, course_title as course_taken, last_name as professor
+FROM students s, student_enrollment e, courses c, teach t
+WHERE s.student_no = e.student_no
+AND c.course_no = e.course_no
+AND t.course_no = c.course_no
+
+--3
+The student's name is repeated because the student is taking multiple courses.
+
+Similarly the course_no is repeated because the course is being taken by multiple students.
+
+There are also multiple professors teaching the same course such as CS180.
+
+--4
+# SELECT student_name, course_title as course_taken, last_name as professor
+# FROM students s, student_enrollment e, courses c, (SELECT min(last_name) last_name, course_no FROM teach
+# GROUP BY course_no) t
+# WHERE s.student_no = e.student_no
+# AND c.course_no = e.course_no
+# AND t.course_no = c.course_no
+--- slight mistakes
+
+SELECT student_name, course_taken, min(professor) FROM
+(SELECT student_name, course_title as course_taken, last_name as professor
+FROM students s, student_enrollment e, courses c, teach t
+WHERE s.student_no = e.student_no
+AND c.course_no = e.course_no
+AND t.course_no = c.course_no) a
+GROUP BY student_name, course_taken
+
+--5
+Because in a correlated subquery, the inner query will be executed for each row in the outer query.
+
+In a non-correlated subquery, the subquery is executed only once.
+-- https://www.java67.com/2017/06/difference-between-correlated-and-non-correlated-subquery-in-sql.html --
+
+--6
+SELECT first_name, last_name, salary, avg_salary from employees e,
+(SELECT ROUND(AVG(salary),2) avg_salary, department FROM employees GROUP BY department) t
+WHERE t.department = e.department
+AND salary > avg_salary
+
+--7
+--- correct
+SELECT s.student_no, student_name, course_no FROM students s LEFT JOIN student_enrollment e
+ON s.student_no = e.student_no
+
+# SELECT student_name, course_no FROM students s, student_enrollment e
+# WHERE s.student_no = e.student_no
