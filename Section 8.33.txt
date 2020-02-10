@@ -1,3 +1,4 @@
+-- Joins and Subqueries Continued
 -- 1
 (SELECT first_name, department, hire_date, country
 FROM employees e INNER JOIN regions r

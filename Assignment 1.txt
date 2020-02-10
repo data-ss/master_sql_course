@@ -1,4 +1,7 @@
-Assignment 1
+-- Database Basics
+-- Create More Tables and Populate Data
+
+-- Assignment 1
 
 1. variable characters, integers, date
 2. variable characters of length limit 5

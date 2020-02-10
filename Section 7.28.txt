@@ -1,3 +1,5 @@
+-- Correlated Subqueries Continued
+
 SELECT department, first_name, salary,
 CASE WHEN salary >= ALL (SELECT salary FROM employees e2 WHERE e1.department = e2.department) THEN 'HIGHEST SALARY'
 	WHEN salary <= ALL (SELECT salary FROM employees e2 WHERE e1.department = e2.department) THEN 'LOWEST SALARY' END salary_in_department

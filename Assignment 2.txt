@@ -1,3 +1,6 @@
+-- SQL Query Basics
+-- Practice Writing Basic Queries (5 Problems)
+
 -- 1
 SELECT student_name
 FROM students

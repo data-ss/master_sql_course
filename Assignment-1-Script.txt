@@ -1,3 +1,5 @@
+-- Creating the Database
+
 create table students
 (
 	student_no integer,

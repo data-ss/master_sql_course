@@ -1,0 +1,22 @@
+-- RANK, FIRST_VALUE and NTILE Functions
+
+SELECT first_name, hire_date, salary,
+SUM(salary) OVER(ORDER BY hire_date ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) as partial_total_of_salaries
+FROM employees
+
+SELECT * FROM
+(SELECT first_name, email, department, salary,
+RANK() OVER(PARTITION BY department ORDER BY salary DESC)
+FROM employees) a WHERE rank = 8
+
+SELECT first_name, email, department, salary,
+NTILE(5) OVER(PARTITION BY department ORDER BY salary DESC) salary_bracket
+FROM employees
+
+SELECT first_name, email, department, salary,
+first_value(salary) OVER(PARTITION BY department ORDER BY salary DESC) first_value
+FROM employees
+
+SELECT first_name, email, department, salary,
+nth_value(salary, 5) OVER(PARTITION BY department ORDER BY first_name asc) nth_value
+FROM employees

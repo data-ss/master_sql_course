@@ -1,3 +1,6 @@
+-- Using Subqueries
+-- Practice with Subqueries
+
 --1
 The students table is not directly related to the courses table.
 This is because there are no shared columns between the two tables.
@@ -27,6 +30,6 @@ LIMIT 1) a)
 False
 
 --5
-SELECT student_name 
+SELECT student_name
 FROM students
 WHERE age >= ALL (SELECT age FROM students)

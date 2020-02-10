@@ -1,3 +1,6 @@
+-- Grouping Data and Computing Aggregates
+-- Practice Aggregation Queries
+
 --1
 SELECT state, sum(supply)
 FROM fruit_imports

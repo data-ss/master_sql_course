@@ -1,3 +1,6 @@
+-- Working with Multiple Tables
+-- ADVANCED Problems Using joins, Grouping and Subqueries
+
 --1
 No the two tables are not directly related to each other because there are no common columns shared between the two tables.
 

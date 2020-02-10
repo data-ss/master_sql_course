@@ -1,3 +1,6 @@
+-- Using Functions
+-- Practice with Functions, Conditional Expressions and Concatenation
+
 --1
 SELECT last_name || ' works in the ' || department || ' department'
 FROM professors
