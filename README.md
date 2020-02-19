@@ -1,5 +1,7 @@
-[Master SQL for Data Science Course at Udemy](https://www.udemy.com/course/master-sql-for-data-science/)
-------
+# [Master SQL for Data Science Course at Udemy](https://www.udemy.com/course/master-sql-for-data-science/)
+
+---
+
 This repo contains my solutions for the [Master SQL for Data Science Course at Udemy](https://www.udemy.com/course/master-sql-for-data-science/), fully completed by 18 February 2020.
 
 #### The following topics were covered throughout the course.
