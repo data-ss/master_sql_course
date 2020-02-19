@@ -1,0 +1,124 @@
+-- Challenging Puzzles for the Brave
+
+1) Write a query that finds students who do not take CS180.
+SELECT DISTINCT(student_name)
+FROM students s JOIN student_enrollment se ON s.student_no = se.student_no
+WHERE course_no <> 'CS180'
+-- This method is incorrect because there are two Michaels, and there are student_no in students which do not take courses listed in student_enrollment
+-- The following is correct.
+SELECT * FROM students where student_no NOT IN
+(SELECT student_no
+FROM student_enrollment
+WHERE course_no = 'CS180')
+-- if use JOIN with "students" table per earlier wrong solution,
+--then need to use FULL JOIN, otherwise it will not include student_no that has no corresponding courses taken
+
+  Course Solution A:
+  SELECT * FROM students
+  WHERE student_no NOT IN (
+      SELECT student_no
+      FROM student_enrollment
+      WHERE course_no = 'CS180'
+      );
+
+  Course Solution B:
+  SELECT s.student_no, s.student_name, s.age
+  FROM students s LEFT JOIN student_enrollment se
+      ON s.student_no = se.student_no
+  GROUP BY s.student_no, s.student_name, s.age
+  HAVING MAX(CASE WHEN se.course_no = 'CS180'
+             THEN 1 ELSE 0 END) = 0
+
+2) Write a query to find students who take CS110 or CS107 but not both.
+SELECT * FROM
+(SELECT student_name, se.student_no, course_no,
+COUNT(*) OVER(PARTITION BY course_no, se.student_no) as number_of_courses
+FROM students s JOIN student_enrollment se ON s.student_no = se.student_no
+WHERE course_no IN ('CS110', 'CS107')) a
+WHERE number_of_courses = 1
+
+  Course Solution A:
+  SELECT s.*
+  FROM students s, student_enrollment se
+  WHERE s.student_no = se.student_no
+  AND se.course_no IN ('CS110', 'CS107')
+  AND s.student_no NOT IN ( SELECT a.student_no
+                            FROM student_enrollment a, student_enrollment b
+                            WHERE a.student_no = b.student_no
+                            AND a.course_no = 'CS110'
+                            AND b.course_no = 'CS107')
+
+  Course Solution B:
+  SELECT s.student_no, s.student_name, s.age
+  FROM students s, student_enrollment se
+  WHERE s.student_no = se.student_no
+  GROUP BY s.student_no, s.student_name, s.age
+  HAVING SUM(CASE WHEN se.course_no IN ('CS110', 'CS107')
+             THEN 1 ELSE 0 END ) = 1
+
+
+3) Write a query to find students who take CS220 and no other courses.
+SELECT * FROM
+(SELECT DISTINCT(se.student_no), student_name,
+COUNT(*) OVER(PARTITION BY se.student_no) as number_of_courses,
+CASE WHEN course_no = 'CS220' THEN 'Yes' ELSE 'No' END as took_cs220
+FROM students s JOIN student_enrollment se ON s.student_no = se.student_no) a
+WHERE (took_cs220 = 'Yes') AND (number_of_courses = 1)
+
+  Course Solution A:
+  SELECT s.*
+  FROM students s, student_enrollment se
+  WHERE s.student_no = se.student_no
+  AND s.student_no NOT IN ( SELECT student_no
+                            FROM student_enrollment
+                            WHERE course_no != 'CS220')
+
+  Course Solution B:
+  SELECT s.*
+  FROM students s, student_enrollment se1,
+       (SELECT student_no FROM student_enrollment
+        GROUP BY student_no
+        HAVING count(*) = 1) se2
+  WHERE s.student_no = se1.student_no
+  AND se1.student_no = se2.student_no
+  AND se1.course_no = 'CS220'
+
+
+
+
+4) Write a query that finds those students who take at most 2 courses.
+--Your query should exclude students that don't take any courses as well
+--as those that take more than 2 course.
+SELECT * FROM
+(SELECT DISTINCT(se.student_no), student_name,
+COUNT(*) OVER(PARTITION BY se.student_no) as number_of_courses
+FROM students s JOIN student_enrollment se ON s.student_no = se.student_no) a
+WHERE (number_of_courses <= 2) AND (number_of_courses <> 0)
+
+  Course Solution:
+  SELECT s.student_no, s.student_name, s.age
+  FROM students s, student_enrollment se
+  WHERE s.student_no = se.student_no
+  GROUP BY s.student_no, s.student_name, s.age
+  HAVING COUNT(*) <= 2
+
+5) Write a query to find students who are older than at most two other students.
+-- Used COALESCE to eliminate the NULL from final row
+-- Set the WHERE condition to not accept older_than=0 because those people will be
+-- youngest, thus no longer "older" than anyone else. Remove (older_than <> 0) to achieve same solution as course solution.
+SELECT *
+FROM students s
+JOIN (SELECT *,
+COALESCE(SUM(people_in_age_group) OVER(ROWS BETWEEN 1 FOLLOWING AND UNBOUNDED FOLLOWING),0) older_than
+FROM (SELECT DISTINCT(age), COUNT(*) OVER(PARTITION BY age) people_in_age_group
+FROM students
+ORDER BY age desc) b) c
+ON s.age = c.age
+WHERE (older_than <= 2) AND (older_than <> 0)
+
+  Course Solution:
+  SELECT s1.*
+  FROM students s1
+  WHERE 2 >= (SELECT count(*)
+              FROM students s2
+              WHERE s2.age < s1.age)
